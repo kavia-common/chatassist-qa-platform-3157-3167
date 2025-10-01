@@ -4,79 +4,57 @@ This project provides a minimal React template with a clean, modern UI and minim
 
 ## Features
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+- Lightweight and modern UI
+- Fast: minimal dependencies
+- Simple to understand and modify
+
+## Backend API linkage
+
+This frontend talks to a Django backend via REST endpoints under `/api/*`. To ensure requests go to the backend (and not to the React dev server), set the following environment variable before starting the app:
+
+- REACT_APP_BASE_URL: The full origin of your backend, without a trailing slash.
+  - Example (local): REACT_APP_BASE_URL=http://localhost:8000
+  - Example (deployed): REACT_APP_BASE_URL=https://your-backend.example.com
+
+Important:
+- Do not rely on relative `/api` paths; the app will refuse to start requests if REACT_APP_BASE_URL is not provided, preventing errors like "Cannot POST /api/chat/send/" from the dev server.
+- Ensure your backend exposes endpoints like:
+  - GET /api/health/
+  - POST /api/chat/send/ (alias for POST /api/ask/)
+  - GET /api/chat/history/
+  - Auth endpoints if enabled.
+
+You can set the variable inline or via a `.env` file.
+
+### .env example
+
+Create `.env` in the qanda_frontend directory with:
+
+```
+# Required: Django backend base URL (no trailing slash)
+REACT_APP_BASE_URL=http://localhost:8000
+```
+
+Then run:
+
+```
+npm start
+```
+
+or for production:
+
+```
+npm run build
+```
 
 ## Getting Started
 
 In the project directory, you can run:
 
-### `npm start`
-
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-### `npm test`
-
-Launches the test runner in interactive watch mode.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-## Customization
-
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
-```
-
-### Components
-
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
-
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
+- npm start — runs the app in development mode at http://localhost:3000
+- npm test — launches the test runner
+- npm run build — builds the app for production
 
 ## Learn More
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+To learn React, check out the React documentation.

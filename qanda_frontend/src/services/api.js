@@ -1,23 +1,40 @@
-//
-// API service for qanda_backend integration
-//
-
-const BASE_URL =
-  process.env.REACT_APP_BACKEND_URL ||
-  (typeof window !== "undefined" && window.location
-    ? `${window.location.origin.replace(":3000", ":8000")}`
-    : "http://localhost:8000");
+/**
+ * API service for qanda_backend integration
+ *
+ * All requests are routed to the Django backend using the REACT_APP_BASE_URL
+ * environment variable. This avoids accidentally posting to the frontend dev
+ * server (e.g., http://localhost:3000) which would result in "Cannot POST /api/..."
+ * HTML responses. Ensure REACT_APP_BASE_URL is set to the backend root URL
+ * (e.g., http://localhost:8000 or the deployed backend origin).
+ */
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 /**
  * Helper to wrap fetch with JSON handling and error normalization.
+ * Ensures we only ever call the backend host provided via env.
  */
 async function request(path, options = {}) {
-  const url = `${BASE_URL}/api${path}`;
+  if (!BASE_URL) {
+    // Provide a clear error to guide configuration
+    throw new Error(
+      "Missing REACT_APP_BASE_URL env var. Set it to your Django backend URL (e.g., http://localhost:8000)."
+    );
+  }
+  const normalizedBase = BASE_URL.replace(/\/+$/, "");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const url = `${normalizedBase}/api${normalizedPath}`;
+
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
-  const resp = await fetch(url, { ...options, headers, credentials: "include" });
+
+  const resp = await fetch(url, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
+
   const ct = resp.headers.get("content-type") || "";
   let payload = null;
   if (ct.includes("application/json")) {
@@ -25,6 +42,7 @@ async function request(path, options = {}) {
   } else {
     payload = await resp.text().catch(() => null);
   }
+
   if (!resp.ok) {
     const message =
       (payload && payload.detail) ||
