@@ -1,0 +1,4 @@
+{
+    "command": "npm install",
+    "working_directory": "/home/kavia/workspace/code-generation/chatassist-qa-platform-3157-3167/qanda_frontend"
+}
